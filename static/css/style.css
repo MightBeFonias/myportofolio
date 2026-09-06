@@ -15,6 +15,7 @@
 }
 
 body {
+    padding-top: 4rem;
     color: var(--ink);
     background: var(--paper);
     font-family: "Space Grotesk", sans-serif;
@@ -26,19 +27,22 @@ section,
     border-bottom: 1px solid var(--line);
 }
 
+.site-header {
+    position: fixed;
+    z-index: 1000;
+    inset: 0 0 auto;
+    background: var(--paper);
+}
+
 .container {
     width: min(calc(100% - 3rem), 960px);
     margin-inline: auto;
 }
 
-.site-header .container,
-.section-header {
+.site-header .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-.site-header .container {
     padding: 1rem 0;
 }
 
@@ -53,8 +57,13 @@ section,
     font-weight: 700;
 }
 
-.site-header nav {
+.site-header nav,
+.social-links {
     display: flex;
+    flex-wrap: wrap;
+}
+
+.site-header nav {
     gap: 1.25rem;
 }
 
@@ -117,6 +126,7 @@ section,
 
 .meta-list {
     display: flex;
+    flex-wrap: wrap;
     gap: 1.75rem;
     margin-bottom: 1.25rem;
 }
@@ -135,12 +145,13 @@ section,
 }
 
 .social-links {
-    display: flex;
-    flex-wrap: wrap;
     gap: 0.5rem;
 }
 
 .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     padding: 0.5rem 0.9rem;
     border-radius: 4px;
     color: var(--cream);
@@ -155,6 +166,7 @@ section,
 
 .social-link:hover,
 .social-link:focus-visible {
+    color: var(--cream);
     background: var(--accent);
     transform: translateY(-2px);
 }
@@ -169,6 +181,7 @@ section,
     z-index: 0;
     inset: 0;
     background: var(--accent);
+    pointer-events: none;
     transition: transform 0.3s ease;
 }
 
@@ -188,7 +201,7 @@ section,
 }
 
 .hero-photo:hover .photo-block {
-    transform: translate(8px, 8px)
+    transform: translate(8px, 8px);
 }
 
 .highlights-section {
@@ -197,8 +210,6 @@ section,
 }
 
 .section-header {
-    align-items: flex-end;
-    gap: 1.5rem;
     margin-bottom: 1.75rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--line);
@@ -212,6 +223,7 @@ section,
 
 .section-header p {
     max-width: 210px;
+    margin-top: 1.5rem;
     color: var(--muted);
     font-size: 0.9rem;
 }
@@ -338,14 +350,6 @@ section,
     .highlights-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .section-header {
-        display: block;
-    }
-
-    .section-header p {
-        margin-top: 1rem;
-    }
 }
 
 @media (max-width: 600px) {
@@ -362,7 +366,6 @@ section,
     }
 
     .meta-list {
-        flex-wrap: wrap;
         gap: 1.25rem;
     }
 
