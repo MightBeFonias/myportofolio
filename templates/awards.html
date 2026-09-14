@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Awards - {{ name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
+        <nav class="desktop-nav">
+          <a href="{% url 'main:show_main' %}">Profile</a>
+          <a href="{% url 'main:show_experience' %}">Experience</a>
+          <a href="{% url 'main:show_awards' %}" aria-current="page">Awards</a>
+        </nav>
+        <details class="site-menu">
+          <summary class="menu-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="menu-toggle-line"></span>
+            <span class="menu-toggle-line"></span>
+            <span class="menu-toggle-line"></span>
+          </summary>
+          <nav class="site-nav">
+            <a href="{% url 'main:show_main' %}">Profile</a>
+            <a href="{% url 'main:show_experience' %}">Experience</a>
+            <a href="{% url 'main:show_awards' %}" aria-current="page">Awards</a>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main>
+      <section class="awards-section">
+        <div class="container">
+          <div class="awards-intro">
+            <p class="section-kicker">Awards & Achievements</p>
+            <h1>A few milestones<br />along the way.</h1>
+            <p>
+              A small record of competition results and recognition that have
+              shaped how I learn, compete, and keep improving.
+            </p>
+          </div>
+
+          <div class="awards-list">
+            {% for award in awards %}
+              <article class="award-card">
+                <div class="award-image">
+                  {% if award.image %}
+                    <img src="{{ award.image }}" alt="{{ award.title }}" />
+                  {% else %}
+                    <div class="award-image-placeholder">Photo coming soon</div>
+                  {% endif %}
+                </div>
+                <div class="award-card-content">
+                  <p class="award-year">{{ award.awarded_at|date:"Y" }}</p>
+                  <h2>{{ award.title }}</h2>
+                  <p class="award-recognition">{{ award.recognition }}</p>
+                  <p class="award-description">{{ award.description }}</p>
+                </div>
+              </article>
+            {% empty %}
+              <p class="empty-state">There is no award or achievement added yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer, Universitas Indonesia.</p>
+      </div>
+    </footer>
+  </body>
+</html>
