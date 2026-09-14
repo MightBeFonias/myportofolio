@@ -97,42 +97,34 @@ python manage.py runserver
 
 Kalau mau review websitenya, bisa langsung aja buka [disini](fatih-naufal51-myportofolio.pws.cs.ui.ac.id)
 
-### Tugas 1
+### Tugas 2
 
-1.  Ya, saya menggunakan beberapa elemen semantik HTML5 seperti `<header>`, `<main>`, `<section>`, `<article>`, `<footer>`, `<ul>`, `<li>`, `<details>`, dan `<summary>`.
+1. Ketika pengguna membuka halaman Awards, browser mengirimkan request ke URL `/awards/`. Request tersebut pertama kali diterima oleh `portofolio/urls.py`, yaitu URL configuration utama proyek. URL configuration ini meneruskan request ke `main/urls.py` melalui `include()`.
 
-    Elemen `<header>` digunakan untuk nav bar, sedangkan `<main>` membungkus konten utama halaman. Saya menggunakan `<section>` untuk memisahkan bagian Profile dan Highlights. Setiap kategori pada Highlights dibungkus menggunakan `<article>`.
+   Di `main/urls.py`, pola URL `awards/` diarahkan ke view `show_awards`. View tersebut mengambil data menggunakan `Award.objects.all()` dari model `Award`, lalu memasukkan data tersebut ke dalam context dengan key `awards`. Setelah itu, view memanggil `render()` untuk menggabungkan context dengan template `templates/awards.html`.
 
-    Saya juga menggunakan `<ul>` dan `<li>` untuk menyusun daftar pencapaian dan pengalaman. Elemen `<details>` dan `<summary>` digunakan untuk membuat setiap item dapat diexpand ketika pengguna ingin membaca informasi yang lebih detail terkait setiap event.
+   Template kemudian melakukan perulangan terhadap data `awards`. Setiap object Award ditampilkan sebagai card yang berisi tahun, judul, recognition, deskripsi, dan foto jika tersedia. Jika database belum memiliki data Award, template menampilkan pesan empty state. Hasil HTML yang sudah dirender kemudian dikirim kembali oleh Django sebagai response dan ditampilkan oleh browser.
 
-    Penggunaan elemen semantik membantu saya membangun struktur halaman yang lebih terorganisasi dan mudah dipahami. Dengan struktur HTML yang jelas, CSS juga menjadi lebih mudah dikelola karena setiap bagian memiliki tujuan yang spesifik.
+2. Data untuk bagian portofolio baru sebaiknya disimpan pada model karena model memisahkan data dari tampilan. Jika data ditulis langsung di dalam template, setiap perubahan judul, deskripsi, tanggal, atau foto mengharuskan saya mengubah source code HTML secara manual.
 
-2. Tantangan utama yang saya temukan adalah mempertahankan keseimbangan antara teks, foto profile, nav bar, dan daftar Highlights pada ukuran layar yang berbeda. Layout yang terlihat aman di desktop tidak selalu cocok dipakai pada mobile karena lebar layar lebih terbatas.
+   Dengan model `Award`, data dapat dikelola sebagai record database dan template hanya bertanggung jawab menampilkan data tersebut. Pendekatan ini membuat maintenance lebih gampang, mengurangi duplikasi, dan memungkinkan penambahan banyak award tanpa mengubah struktur template.
 
-   Pada desktop, informasi profile dan foto ditampilkan dalam layout dua kolom menggunakan CSS Grid. Pada ukuran layar yang lebih kecil, layout tersebut diubah menjadi satu kolom agar teks dan foto tidak saling bertabrakan. Saya juga mengatur ulang ukuran heading, jarak antar bagian, lebar container, serta jarak antar item menggunakan media query.
+3. `makemigrations` membandingkan perubahan pada `models.py` dengan migration yang sudah ada, lalu membuat file migration baru yang berisi instruksi perubahan skema database. `migrate` menjalankan instruksi tersebut pada database yang digunakan oleh proyek.
 
-   Dalam menentukan elemen yang perlu diprioritaskan, saya memastikan terlebih dahulu bahwa informasi utama seperti nama, bio, foto, navigation, dan kategori Highlights tetap terlihat jelas. Elemen visual tambahan seperti offset shadow dan hover effect dibuat lebih sederhana agar tidak mengganggu pengguna yang menggunakan layar kecil.
-
-   Saya mengevaluasi hasilnya dengan menguji tampilan pada ukuran desktop, tablet, dan mobile. Jika teks terlalu panjang, item terlalu sempit, atau elemen keluar dari layar, saya menyesuaikan kembali `font-size`, `gap`, `padding`, `grid-template`, dan lebar container. Saya juga menggunakan unit responsif seperti `clamp()`, `min()`, dan persentase agar ukuran elemen tidak terlalu bergantung pada satu ukuran layar.
-
-3. Batasan utama dari static web ini adalah seluruh konten masih ditulis langsung di dalam file HTML. Jika saya ingin menambahkan, mengubah, atau menghapus pencapaian dan pengalaman, saya harus mengubah source code secara manual.
-
-   Selain itu, interaksi yang tersedia masih terbatas pada fitur native HTML dan CSS. Contohnya, item Highlights dapat dibuka menggunakan `<details>`, tetapi belum ada sistem untuk memfilter konten, mencari item tertentu, atau mengelola konten secara dinamis.
-
-   Pada iterasi berikutnya, saya ingin menambahkan backend Django dengan database untuk menyimpan data project, achievements, skills, dan experiences. Saya juga ingin membuat halaman admin atau dashboard agar konten portfolio dapat dikelola tanpa mengubah file HTML secara langsung.
+   Contohnya, ketika model `Award` ditambahkan, saya perlu menjalankan `makemigrations` untuk membuat migration yang membuat tabel Award. Setelah itu, saya menjalankan `migrate` agar tabel tersebut benar-benar dibuat di database. Hal yang sama berlaku ketika field baru seperti `image` ditambahkan ke model Award.
 
 ## AI Disclosure
 
-Saat mengerjakan project ini, saya menggunakan Hermes Agent untuk membantu saya di beberapa bagian.
+Pada Tugas 2, saya menggunakan Hermes Agent sebagai AI assistant untuk membantu saya. Saya tetap menentukan fitur yang dibuat, memberikan arahan terhadap perubahan, mereview ulang hasilnya, dan melakukan verifikasi terhadap hasilnya.
 
-Bagian yang dibantu oleh Hermes:
+Bagian yang dibantu oleh Hermes Agent:
 
-- Membantu saya adjust color pallete dari web saya.
-- Memperbaiki semantic structure dari code HTML saya
-- Membantu saya mencari logo untuk social links
-- Refactor CSS supaya tidak ada code yang redundan atau useless
-- Menerapkan rule of 4 pada CSS saya
-- Membantu saya mencari syntax CSS yang tepat jika saya kesulitan menemukannya di internet
-- Membantu saya manifest Repo Structure untuk markdown README.md
+- Membantu menganalisis struktur proyek Django yang sudah ada, termasuk `models.py`, `views.py`, `urls.py`, template, stylesheet, dan test yang relevan sebelum perubahan dilakukan.
+- Membantu menyusun field model Award yang diperlukan, yaitu `title`, `recognition`, `description`, `awarded_at`, dan `image`, agar informasi achievement dapat dikelola sebagai data database.
+- Membantu menyusun tampilan card Awards menggunakan CSS, termasuk frame `var(--alternative)`, background `var(--paper)`, placeholder `PHOTO COMING SOON`, layout responsif, dan penyesuaian font agar konsisten dengan halaman lain.
+- Membantu merapikan CSS menggunakan pendekatan Ponytail dengan menghapus deklarasi redundant, menggabungkan selector yang memiliki style sama, dan mempersingkat kode tanpa mengubah logic atau layout yang sudah disepakati.
+- Membantu menyesuaikan navbar agar menggunakan native HTML `<details>` dan `<summary>` tanpa JavaScript tambahan.
+- Membantu menulis dan menyesuaikan test untuk memastikan halaman Awards membaca data dari database, menampilkan placeholder foto, dan tetap menggunakan navigasi native.
+- Membantu melakukan verifikasi menggunakan `manage.py check`, test Django, pengecekan `git diff --check`, pemeriksaan migration, dan pengecekan bahwa file static dapat diakses.
 
-Untuk tools/skills yang agent saya gunakan sendiri ada ponytail lite supaya code saya menjadi lebih singkat dan efisien, untuk strategi prompting sendiri saya selalu meminta agent saya untuk selalu menjaga fungsionalitas code saya sebelumnya saat melakukan refactor, saya biasa menggunakan prompt ini untuk refactor "pake ponytail lite buat bantu gw refactor code ini, jangan ubah fungsi code yang sebelumnya udah gw tulis cukup hapus line yang redundan atau useless supaya code gw jadi sesingkat dan seefisien mungkin". Kalo untuk syntax sendiri saya biasanya menyampaikan ide saya dalam bentuk prompt "saya ingin implementasi blabla" atau saya menggambar dulu di tldraw lalu saya screenshot dan kirim ke hermes terkait apa yang saya inginkan, lalu nanti hermes akan manifest syntaxnya.
+Strategi prompting yang digunakan adalah memberikan konteks file dan tujuan perubahan secara spesifik, lalu meminta AI untuk mempertahankan fungsionalitas yang sudah ada. Untuk refactor CSS, saya menggunakan pendekatan Ponytail dengan instruksi agar kode dipersingkat, selector redundant dihapus, dan logic atau layout tidak diubah. Semua perubahan tetap saya review dan validasi sebelum digunakan.
