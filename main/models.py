@@ -25,3 +25,17 @@ class Experience(models.Model):
     @property
     def is_ongoing(self):
         return self.ended_at is None
+
+
+class Award(models.Model):
+    title = models.CharField(max_length=255)
+    recognition = models.CharField(max_length=255)
+    description = models.TextField()
+    image = models.URLField(blank=True)
+    awarded_at = models.DateField()
+
+    class Meta:
+        ordering = ["-awarded_at"]
+
+    def __str__(self):
+        return self.title
