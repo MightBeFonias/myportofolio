@@ -16,11 +16,24 @@
     <header class="site-header">
         <div class="container">
             <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
+            <nav class="desktop-nav">
                 <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="#highlights">Highlights</a>
                 <a href="{% url 'main:show_experience' %}">Experience</a>
+                <a href="{% url 'main:show_awards' %}">Awards</a>
             </nav>
+            <details class="site-menu">
+                <summary class="menu-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="menu-toggle-line"></span>
+                    <span class="menu-toggle-line"></span>
+                    <span class="menu-toggle-line"></span>
+                </summary>
+                <nav class="site-nav">
+                    <a href="{% url 'main:show_main' %}">Profile</a>
+                    <a href="{% url 'main:show_experience' %}">Experience</a>
+                    <a href="{% url 'main:show_awards' %}">Awards</a>
+                </nav>
+            </details>
         </div>
     </header>
 
@@ -29,7 +42,7 @@
             <div class="container hero-grid">
                 <div class="hero-identity">
                     <p class="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
-                    <h1>{{ name }}</h1>
+                    <h1><span>Fatih</span><span>Naufal</span><span>Habibillah</span></h1>
                 </div>
                 <div class="hero-photo">
                     <div class="photo-block"></div>
@@ -62,149 +75,38 @@
         <section class="highlights-section" id="highlights">
             <div class="container">
                 <div class="section-header">
-                    <h2>Highlights</h2>
-                    <p>Few things that shaped my journey.</p>
+                    <div class="section-header-copy">
+                        <h2>Things I Do</h2>
+                        <p>A few things I do outside the lecturers.</p>
+                    </div>
                 </div>
 
-                <div class="highlights-grid">
-                    <article class="highlights-cards">
-                        <div class="card-content">
-                            <h3 class="card-title">Competitive Programming</h3>
-
-                            <p class="card-description">
-                                I do Competitive Programming for fun 😁.
-                            </p>
-
-                            <ul class="card-list">
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>ICPC Asia Jakarta 2025</span>
-                                            <small>Highest Honors</small>
-                                        </summary>
-                                        <p>
-                                            Participated in the ICPC Asia Jakarta regional contest
-                                            and achieved the Highest Honors distinction (Ranked 22th).
-                                        </p>
-                                        <a href="https://icpc.global/regionals/finder/Jakarta-2026/standings" target="_blank">
-                                            View result
-                                        </a>
-                                    </details>
-                                </li>
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>Indonesia NOI 2024</span>
-                                            <small>Silver Medal</small>
-                                        </summary>
-                                        <p>
-                                            Earned a Silver Medal in Indonesia NOI 2024 through algorithmic
-                                            problem solving and competitive programming.
-                                        </p>
-                                        <a href="https://osn.toki.id/statistik/peserta/1540" target="_blank">
-                                            View result
-                                        </a>
-                                    </details>
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>BNPCHS 2024</span>
-                                            <small>Bronze Medal</small>
-                                        </summary>
-                                        <p>
-                                            Received a Bronze Medal after competing in BNPCHS 2024.
-                                        </p>
-
-                                        <a href="https://competition.binus.ac.id/bnpchs/2024/scoreboard/"
-                                            target="_blank">
-                                            View result
-                                        </a>
-                                    </details>
-                                </li>
-                            </ul>
+                <div class="things-grid">
+                    <article class="thing-card thing-card--competitive">
+                        <div>
+                            <h3>Competitive Programming</h3>
+                            <p>I've been doing competitive programming for a while and i oftenly working on some competitive programming problems for fun 🤩.</p>
                         </div>
                     </article>
 
-                    <article class="highlights-cards">
-                        <div class="card-content">
-                            <h3 class="card-title">AI Research</h3>
-
-                            <p class="card-description">
-                                I also enjoyed doing some research about Artificial Intelligence and Machine Learning.
-                            </p>
-
-                            <ul class="card-list">
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>LM-KBC Challenge</span>
-                                        </summary>
-
-                                        <p>
-                                            Contributed as a co-author to an accepted paper submitted to
-                                            the LM-KBC Challenge.
-                                        </p>
-
-                                        <a href="/static/docs/lm-kbc-paper.pdf" target="_blank">
-                                            Read the paper
-                                        </a>
-                                    </details>
-                                </li>
-                            </ul>
+                    <article class="thing-card thing-card--ai">
+                        <div>
+                            <h3>Learning about AI</h3>
+                            <p>I oftenly scrolling through X to find the newest update about AI Research or simply read some paper from arXiv.</p>
                         </div>
                     </article>
 
-                    <article class="highlights-cards">
-                        <div class="card-content">
-                            <h3 class="card-title">Experience &amp; Contribution</h3>
+                    <article class="thing-card thing-card--comics">
+                        <div>
+                            <h3>Reading Comics</h3>
+                            <p>I love reading comics no matter what kind of comics is that, no matter is it manhwa, manga, manhua, or comics from another country.</p>
+                        </div>
+                    </article>
 
-                            <p class="card-description">
-                                I enjoy sharing knowledge and contributing to
-                                technical communities through teaching,
-                                mentoring, and problem setting.
-                            </p>
-
-                            <ul class="card-list">
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>Teaching Assistant</span>
-                                            <small>Computer Organization</small>
-                                        </summary>
-                                        <p>
-                                            Assisted students in understanding concepts related to
-                                            Introduction to Computer Organization.
-                                        </p>
-                                    </details>
-                                </li>
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>Competitive Programming Tutor</span>
-                                            <small>Mentoring</small>
-                                        </summary>
-                                        <p>
-                                            Helped students develop algorithmic thinking and problem-solving
-                                            skills through competitive programming practice.
-                                        </p>
-                                    </details>
-                                </li>
-                                <li>
-                                    <details name="highlights-details">
-                                        <summary>
-                                            <span>Problem Setter</span>
-                                            <small>Final Datathon Highschool Track 2026</small>
-                                        </summary>
-                                        <p>
-                                            Contributed as a problem setter for the Final Datathon 2026.
-                                        </p>
-                                        <a href="https://www.kaggle.com/t/966bde6efd8542609b444b38522ec920"
-                                            target="_blank">
-                                            View problem statement
-                                        </a>
-                                    </details>
-                                </li>
-                            </ul>
+                    <article class="thing-card thing-card--music">
+                        <div>
+                            <h3>Listening to Music</h3>
+                            <p>I'm quite a "Listen to Everything" person, so i love almost any kind of music out there. I also love doing my works while listening to music.</p>
                         </div>
                     </article>
                 </div>
