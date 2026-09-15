@@ -11,6 +11,7 @@ class MainTest(TestCase):
             title="Asisten Dosen PBP",
             description="Membantu mahasiswa memahami pengembangan web.",
             category="part-time",
+            started_at=timezone.now(),
         )
 
     def test_main_url_is_accessible(self):
@@ -68,7 +69,7 @@ class MainTest(TestCase):
     def test_empty_awards_page(self):
         response = self.client.get(reverse("main:show_awards"))
 
-        self.assertContains(response, "Belum ada award atau achievement yang ditambahkan.")
+        self.assertContains(response, "There is no award or achievement added yet.")
 
     def test_nonexistent_page_returns_404(self):
         response = self.client.get("/halaman-yang-tidak-ada/")
@@ -98,7 +99,7 @@ class MainTest(TestCase):
         Experience.objects.all().delete()
         response = self.client.get(reverse("main:show_experience"))
 
-        self.assertContains(response, "Belum ada pengalaman yang ditambahkan.")
+        self.assertContains(response, "There is no experience added yet.")
 
     def test_mobile_navigation_uses_native_details_menu(self):
         for route in ("main:show_main", "main:show_experience", "main:show_awards"):
