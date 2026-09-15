@@ -80,6 +80,7 @@ WHITENOISE_USE_FINDERS = True
 
 WSGI_APPLICATION = "portofolio.wsgi.application"
 
+CSRF_TRUSTED_ORIGINS = ["https://fatih-naufal51-myportofolio.pws.cs.ui.ac.id"]
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
