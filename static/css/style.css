@@ -12,6 +12,7 @@
     --accent-dark: #963d28;
     --line: #d9d2c7;
     --muted: #6b665d;
+    --radius: 8px;
 }
 
 ::selection {
@@ -84,7 +85,7 @@ section,
 
 .site-header nav a {
     font-size: 0.9rem;
-    transition: color 0.2s ease;
+    transition: color 0.4s ease;
 }
 
 .site-header nav a:hover,
@@ -216,7 +217,7 @@ section,
     font-size: 0.8rem;
     font-weight: 600;
     text-decoration: none;
-    transition: background 0.2s ease, transform 0.2s ease;
+    transition: background 0.4s ease, transform 0.4s ease;
 }
 
 .social-link i {
@@ -243,7 +244,7 @@ section,
     inset: 0;
     background: var(--accent);
     pointer-events: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .avatar {
@@ -254,7 +255,7 @@ section,
     aspect-ratio: 1;
     border: 3px solid var(--ink);
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .hero-photo:hover .avatar {
@@ -306,6 +307,13 @@ section,
     border: 2px solid var(--ink);
     border-radius: 8px;
     background: var(--alternative);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.thing-card:hover {
+    border-color: var(--ink);
+    box-shadow: 8px 8px 0 var(--accent);
+    transform: translate(-4px, -4px);
 }
 
 .thing-card h3 {
@@ -424,7 +432,7 @@ section,
         width: 1.15rem;
         height: 2px;
         background: currentColor;
-        transition: transform 0.2s ease, opacity 0.2s ease;
+        transition: transform 0.4s ease, opacity 0.4s ease;
     }
 
     .site-menu[open] .menu-toggle-line:nth-of-type(2) {
@@ -488,7 +496,19 @@ section,
 }
 
 .experience-intro {
+    display: flex;
+    flex-direction: column;
     padding-bottom: clamp(3.5rem, 7vw, 6rem);
+}
+
+.experience-intro .collection-add-button {
+    align-self: flex-end;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.awards-intro .collection-add-button {
+    margin-bottom: 2rem;
 }
 
 .section-kicker {
@@ -516,7 +536,7 @@ section,
 }
 
 .experience-intro-copy,
-.awards-intro > p:last-child {
+.awards-intro > p:not(.section-kicker) {
     margin-top: clamp(2rem, 4vw, 4rem);
     color: var(--muted);
     font-size: clamp(1rem, 1.25vw, 1.2rem);
@@ -564,6 +584,13 @@ section,
     border: 2px solid var(--ink);
     border-radius: 8px;
     background: var(--paper);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.experience-entry-content:hover {
+    border-color: var(--ink);
+    box-shadow: 8px 8px 0 var(--accent);
+    transform: translate(-4px, -4px);
 }
 
 .experience-entry-heading {
@@ -630,6 +657,10 @@ section,
         padding-bottom: 3.5rem;
     }
 
+    .experience-intro .collection-add-button {
+        align-self: flex-start;
+    }
+
     .experience-section h1 {
         max-width: none;
         font-size: clamp(3.75rem, 17vw, 6rem);
@@ -666,16 +697,29 @@ section,
 }
 
 .awards-intro {
-    max-width: 56rem;
-    padding-bottom: clamp(3rem, 6vw, 5rem);
+    display: flex;
+    flex-direction: column;
+    max-width: none;
+    padding-bottom: 0;
 }
 
 .awards-intro h1 {
     max-width: 9ch;
 }
 
-.awards-intro > p:last-child {
+.awards-intro > p:not(.section-kicker) {
     max-width: 38rem;
+}
+
+.awards-intro .collection-add-button {
+    align-self: flex-end;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.awards-section .collection-search {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
 }
 
 .awards-list {
@@ -688,6 +732,13 @@ section,
     overflow: hidden;
     border: 1px solid var(--line);
     background: var(--alternative);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.award-card:hover {
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.24);
+    transform: translateY(-6px);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 .award-image {
@@ -755,7 +806,244 @@ section,
         font-size: clamp(3.75rem, 17vw, 6rem);
     }
 
+    .awards-intro .collection-add-button {
+        align-self: flex-start;
+    }
+
     .awards-list {
         grid-template-columns: 1fr;
+    }
+}
+
+.form {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.7rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    font: inherit;
+    transition:
+        border-color 0.4s ease,
+        outline-color 0.4s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: 2px solid var(--accent);
+    border-color: var(--accent);
+}
+
+.form-error {
+    color: #b42318;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+}
+
+.button {
+    display: inline-block;
+    height: fit-content;
+    border: 0;
+    border-radius: 4px;
+    padding: 0.65rem 1rem;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.button-secondary {
+    background: var(--ink);
+}
+
+.add-section h1{
+    margin-top: 0.75rem;
+    padding-bottom: 2rem;
+    font-size: clamp(1rem, 9vw, 4rem);
+    letter-spacing: -0.1em;
+    line-height: 0.82;
+}
+
+.collection-action {
+    background: var(--ink);
+    color: var(--paper);
+    transition: background 0.4s ease, transform 0.4s ease;
+}
+
+.collection-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    line-height: 1.2;
+}
+
+.collection-action:hover,
+.collection-action:focus-visible {
+    background: var(--accent);
+    color: var(--paper);
+    transform: translateY(-2px);
+}
+
+.collection-add-button span {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.collection-search {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.collection-search__input {
+    appearance: none;
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+}
+
+.collection-search .button {
+    flex: 0 0 auto;
+}
+
+.collection-search__input:focus {
+    outline: 2px solid var(--accent);
+    border-color: var(--accent);
+}
+
+.delete-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+    background: transparent;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-modal:popover-open {
+    display: flex;
+}
+
+.delete-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    background: rgba(28, 25, 23, 0.58);
+    cursor: default;
+}
+
+.delete-modal__content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 480px);
+    padding: 1.5rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 1rem 3rem rgba(28, 25, 23, 0.22);
+}
+
+.delete-modal__content h2 {
+    margin: 0 0 0.75rem;
+    font-family:
+        "Space Grotesk",
+        -apple-system,
+        sans-serif;
+    font-size: 1.5rem;
+}
+
+.delete-modal__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.delete-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.button-danger {
+    background: #b42318;
+}
+
+@media (max-width: 600px) {
+    .delete-modal {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .delete-modal__content {
+        width: 100%;
+        padding: 1.25rem;
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .delete-modal__actions {
+        flex-direction: column-reverse;
+    }
+
+    .delete-modal__actions .button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .collection-action,
+    .collection-search {
+        width: 100%;
+    }
+
+    .collection-add-button {
+        justify-content: center;
+    }
+
+    .collection-search {
+        flex-direction: column;
     }
 }
