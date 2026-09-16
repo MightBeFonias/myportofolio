@@ -85,7 +85,7 @@ class AwardForm(ModelForm):
                     "rows": 3,
                 }
             ),
-            "award_image_url": URLInput(
+            "image": URLInput(
                 attrs={
                     "placeholder": "https://drive.google.com/...",
                 }
