@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block meta %}
-    <title>Add Award - {{ name }}</title>
+    <title>{% if is_update %}Edit{% else %}Add{% endif %} Award - {{ name }}</title>
 {% endblock meta %}
 {% block content %}
     <main>
         <section class="add-section">
             <div class="container">
-                <h1>Add New Award</h1>
+                <h1>{% if is_update %}Edit Award{% else %}Add New Award{% endif %}</h1>
                 <form method="post"
-                      action="{% url 'main:create_award' %}"
+                      action="{% if is_update %}{% url 'main:update_award' award.id %}{% else %}{% url 'main:create_award' %}{% endif %}"
                       class="form">
                     {% csrf_token %}
                     {% for field in form %}
@@ -20,7 +20,7 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
-                    <button type="submit" class="button">Add Award</button>
+                    <button type="submit" class="button">{% if is_update %}Save Changes{% else %}Add Award{% endif %}</button>
                     <a href="{% url 'main:show_awards' %}" class="button button-secondary">Cancel</a>
                 </form>
             </div>

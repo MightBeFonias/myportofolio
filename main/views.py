@@ -66,6 +66,23 @@ def create_experience(request):
     }
     return render(request, "form_experience.html", context)
 
+def update_experience(request, experience_id):
+    experience = get_object_or_404(Experience, pk=experience_id)
+    form = ExperienceForm(request.POST or None, instance=experience)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Experience berhasil diperbarui!")
+        return redirect("main:show_experience")
+
+    context = {
+        "name": "Fatih",
+        "form": form,
+        "experience": experience,
+        "is_update": True,
+    }
+    return render(request, "form_experience.html", context)
+
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
     experiences = Experience.objects.all()
@@ -87,6 +104,23 @@ def create_award(request):
     context = {
         "name": "Fatih",
         "form": form,
+    }
+    return render(request, "form_award.html", context)
+
+def update_award(request, award_id):
+    award = get_object_or_404(Award, pk=award_id)
+    form = AwardForm(request.POST or None, instance=award)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Award berhasil diperbarui!")
+        return redirect("main:show_awards")
+
+    context = {
+        "name": "Fatih",
+        "form": form,
+        "award": award,
+        "is_update": True,
     }
     return render(request, "form_award.html", context)
 
