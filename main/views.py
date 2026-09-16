@@ -28,7 +28,7 @@ def show_experience(request):
 
     context = {
         "name" : "Fatih Naufal Habibillah",
-        "experience_list" : Experience.objects.all(),
+        "experience_list" : experiences,
         "title_query" : title_query,
     }
     return render(request, 'experience.html', context)
@@ -47,7 +47,7 @@ def show_awards(request):
 
     context = {
         "name": "Fatih Naufal Habibillah",
-        "awards": Award.objects.all(),
+        "awards": awards,
         "title_query" : title_query,
     }
     return render(request, "awards.html", context)
