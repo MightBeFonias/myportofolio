@@ -49,7 +49,11 @@
                   <h2>{{ award.title }}</h2>
                   <p class="award-recognition">{{ award.recognition }}</p>
                   <p class="award-description">{{ award.description }}</p>
-                  {% include "components/award_delete_modal.html" with award=award %}
+                  <div class="card-actions">
+                    <a href="{% url 'main:update_award' award.id %}"
+                       class="button collection-action edit-action">Edit Award</a>
+                    {% include "components/award_delete_modal.html" with award=award %}
+                  </div>
                 </div>
               </article>
             {% empty %}

@@ -51,6 +51,7 @@ class MainTest(TestCase):
         self.assertContains(response, "2025")
         self.assertContains(response, "Highest Honors · Rank 22")
         self.assertContains(response, "Delete Award")
+        self.assertContains(response, "Edit Award")
         self.assertContains(response, f'href="{reverse("main:show_experience")}"')
 
     def test_awards_page_renders_empty_photo_placeholder(self):
@@ -95,6 +96,7 @@ class MainTest(TestCase):
         self.assertContains(response, 'class="experience-entry-heading"')
         self.assertContains(response, 'class="experience-entry-content"')
         self.assertContains(response, "Delete Experience")
+        self.assertContains(response, "Edit Experience")
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
 
     def test_empty_experience_page(self):
@@ -122,3 +124,44 @@ class MainTest(TestCase):
         self.assertFalse(self.experience.is_ongoing)
         self.assertContains(response, "Finished")
         self.assertNotContains(response, "Ongoing")
+
+    def test_experience_can_be_updated(self):
+        response = self.client.post(
+            reverse("main:update_experience", args=[self.experience.id]),
+            {
+                "title": "Updated Experience",
+                "description": "Updated description.",
+                "category": "research",
+                "started_at": "2025-01-01T09:00",
+                "ended_at": "",
+            },
+        )
+
+        self.assertRedirects(response, reverse("main:show_experience"))
+        self.experience.refresh_from_db()
+        self.assertEqual(self.experience.title, "Updated Experience")
+        self.assertEqual(self.experience.category, "research")
+
+    def test_award_can_be_updated(self):
+        award = Award.objects.create(
+            title="Old Award",
+            recognition="Old recognition",
+            description="Old description",
+            awarded_at=timezone.datetime(2024, 1, 1).date(),
+        )
+
+        response = self.client.post(
+            reverse("main:update_award", args=[award.id]),
+            {
+                "title": "Updated Award",
+                "recognition": "Updated recognition",
+                "description": "Updated description",
+                "image": "https://example.com/updated.jpg",
+                "awarded_at": "2025-01-01",
+            },
+        )
+
+        self.assertRedirects(response, reverse("main:show_awards"))
+        award.refresh_from_db()
+        self.assertEqual(award.title, "Updated Award")
+        self.assertEqual(award.image, "https://example.com/updated.jpg")
