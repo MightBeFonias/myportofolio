@@ -1,12 +1,12 @@
-<p class="award-status">
+<div class="delete-card-action">
     <button type="button"
-            class="button button-danger"
+            class="button collection-action"
             popovertarget="delete-award-{{ award.id }}"
             aria-label="Delete {{ award.title }}"
             title="Delete Award">
         Delete Award
     </button>
-</p>
+</div>
 <div id="delete-award-{{ award.id }}"
      class="delete-modal"
      popover="auto"
