@@ -50,6 +50,7 @@ class MainTest(TestCase):
         self.assertContains(response, "ICPC Asia Jakarta")
         self.assertContains(response, "2025")
         self.assertContains(response, "Highest Honors · Rank 22")
+        self.assertContains(response, "Delete Award")
         self.assertContains(response, f'href="{reverse("main:show_experience")}"')
 
     def test_awards_page_renders_empty_photo_placeholder(self):
@@ -93,6 +94,7 @@ class MainTest(TestCase):
         self.assertContains(response, 'class="experience-marker"')
         self.assertContains(response, 'class="experience-entry-heading"')
         self.assertContains(response, 'class="experience-entry-content"')
+        self.assertContains(response, "Delete Experience")
         self.assertContains(response, f'href="{reverse("main:show_main")}"')
 
     def test_empty_experience_page(self):
