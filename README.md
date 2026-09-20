@@ -12,18 +12,33 @@ Website ini akan berisi beberapa pengalaman, background academic, dan juga beber
 
 ## Fitur
 
-Sejauh ini, website ini baru berisi 2 section:
+Website ini merupakan portofolio pribadi yang terdiri dari beberapa bagian dan fitur berikut:
 
-- About Me
-Most likely ini berisi informasi pribadi seperti nama, NPM, social links, dan juga foto saya pribadi. Not much too say di section ini
+- **About Me**
+  Menampilkan informasi pribadi saya seperti nama, NPM, program studi, bio, social links, dan juga foto saya pribadi.
 
-- Highlights
-Section ini berisi beberapa pengalaman atau achievements yang pernah saya peroleh dalam kehidupan saya pribadi. Disini saya bagi menjadi 3 sub-section yang terdiri dari:
-    - Competitive Programming
-    - Research
-    - Experience
+- **Experience**
+  Menampilkan pengalaman saya beserta timeline dari experience terkait, bagian ini juga dilengkapi dengan deskripsi, kategori, periode waktu, dan status ongoing atau finished.
 
-Disini juga user dapat melakukan expansion untuk mendapat informasi lebih detail terkait setiap event yang saya ikuti ataupun project yang saya kerjakan.
+- **Awards & Achievements**
+  Menampilkan pencapaian dalam bentuk card yang berisi tahun, nama event, result, deskripsi, dan gambar kalo misal ada foto pas event berlangsung.
+
+- **Create Form**
+  User dapat menambahkan data Experience dan Award melalui form berbasis `ModelForm`.
+
+- **Update Form**
+  Data Experience dan Award yang sudah tersimpan dapat diubah melalui tombol Edit pada masing-masing card, jadi ga perlu delete terus create lagi dari 0 kalo mau update
+
+- **Delete dengan Confirmation Modal**
+  Data dapat dihapus melalui tombol Delete, tapi ada double confirmation untuk mencegah deletion yang ga disengaja oleh user.
+
+- **Search**
+  Halaman Experience dan Awards menyediakan pencarian berdasarkan judul dari card terkait.
+
+- **JSON Data Delivery**
+  Data tersedia melalui endpoint berikut:
+  - `/api/experiences/`
+  - `/api/awards/`
 
 ## Repo Structure
 
