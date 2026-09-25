@@ -17,13 +17,13 @@
               A running record of the places where I have learned, contributed,
               and built alongside other people.
             </p>
-
-            <a href="{% url 'main:create_experience' %}"
-                class="button collection-action collection-add-button">
-                <span aria-hidden="true">+</span>
-                Add Experience
-            </a>
-
+            {% if user.is_superuser %}
+              <a href="{% url 'main:create_experience' %}"
+                  class="button collection-action collection-add-button">
+                  <span aria-hidden="true">+</span>
+                  Add Experience
+              </a>
+            {% endif %}
             <form method="get"
                   action="{% url 'main:show_experience' %}"
                   class="collection-search">
@@ -64,11 +64,16 @@
                     </span>
                   </div>
                   <p class="experience-description">{{ experience.description }}</p>
-                  <div class="card-actions">
-                    <a href="{% url 'main:update_experience' experience.id %}"
-                       class="button collection-action edit-action">Edit Experience</a>
-                    {% include "components/experience_delete_modal.html" with experience=experience %}
-                  </div>
+                    <div class="card-actions">
+                      {% if user.is_superuser %}
+                      <a href="{% url 'main:update_experience' experience.id %}"
+                        class="button collection-action edit-action">Edit Experience</a>
+                      {% endif %}
+                      {% include "components/experience_star.html" with experience=experience %}
+                      {% if user.is_superuser %}
+                        {% include "components/experience_delete_modal.html" with experience=experience %}
+                      {% endif %}
+                    </div>
                 </div>
               </article>
             {% empty %}

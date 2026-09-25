@@ -15,11 +15,13 @@
               A small record of competition results and recognition that have
               shaped how I learn, compete, and keep improving.
             </p>
-            <a href="{% url 'main:create_award' %}"
-                class="button collection-action collection-add-button">
-                <span aria-hidden="true">+</span>
-                Add Award
-            </a>
+            {% if user.is_superuser %}
+              <a href="{% url 'main:create_award' %}"
+                  class="button collection-action collection-add-button">
+                  <span aria-hidden="true">+</span>
+                  Add Award
+              </a>
+            {% endif %}
           </div>
 
           <form method="get"
@@ -49,11 +51,16 @@
                   <h2>{{ award.title }}</h2>
                   <p class="award-recognition">{{ award.recognition }}</p>
                   <p class="award-description">{{ award.description }}</p>
-                  <div class="card-actions">
-                    <a href="{% url 'main:update_award' award.id %}"
-                       class="button collection-action edit-action">Edit Award</a>
-                    {% include "components/award_delete_modal.html" with award=award %}
-                  </div>
+                    <div class="card-actions">
+                      {% if user.is_superuser %}
+                      <a href="{% url 'main:update_award' award.id %}"
+                        class="button collection-action edit-action">Edit Award</a>
+                      {% endif %}
+                      {% include "components/award_star.html" with award=award %}
+                      {% if user.is_superuser %}
+                        {% include "components/award_delete_modal.html" with award=award %}
+                      {% endif %}
+                    </div>
                 </div>
               </article>
             {% empty %}

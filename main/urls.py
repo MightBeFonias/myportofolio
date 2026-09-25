@@ -1,6 +1,12 @@
 from django.urls import path
 
-from main.views import show_awards, show_main, show_experience, create_experience, update_experience, create_award, update_award, get_experiences_json, get_awards_json, delete_experience, delete_award
+from main.views import (
+    show_awards, show_main, show_experience, 
+    create_experience, update_experience, create_award, 
+    update_award, get_experiences_json, get_awards_json, 
+    delete_experience, delete_award, register, login_user, logout_user,
+    toggle_star_award, toggle_star_experience
+)
 
 app_name = "main"
 
@@ -15,5 +21,10 @@ urlpatterns = [
     path("awards/<uuid:award_id>/edit/", update_award, name="update_award"),
     path("api/awards/", get_awards_json, name="get_awards_json"),
     path("experience/<uuid:experience_id>/delete/", delete_experience, name="delete_experience"),
-    path("awards/<uuid:award_id>/delete/", delete_award, name="delete_award")
+    path("awards/<uuid:award_id>/delete/", delete_award, name="delete_award"),
+    path("register/", register, name="register"),
+    path("login/", login_user, name="login_user"),
+    path("logout/", logout_user, name="logout_user"),
+    path("experience/<uuid:experience_id>/star/", toggle_star_experience, name="toggle_star_experience"),
+    path("awards/<uuid:award_id>/star/", toggle_star_award, name="toggle_star_award")
 ]

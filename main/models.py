@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Experience(models.Model):
@@ -18,6 +19,11 @@ class Experience(models.Model):
     category = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES, default='Full-Time')
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField(blank=True, null=True)
+
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_experiences", blank=True
+    )
+
     def __str__(self):
         return self.title
     
@@ -33,6 +39,10 @@ class Award(models.Model):
     description = models.TextField()
     image = models.URLField(blank=True)
     awarded_at = models.DateField()
+
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_awards", blank=True
+    )
 
     class Meta:
         ordering = ["-awarded_at"]
