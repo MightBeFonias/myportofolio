@@ -65,7 +65,7 @@
                   </div>
                   <p class="experience-description">{{ experience.description }}</p>
                     <div class="card-actions">
-                      {% if user.is_superuser %}
+                      {% if user.is_superuser or user.is_editor %}
                       <a href="{% url 'main:update_experience' experience.id %}"
                         class="button collection-action edit-action">Edit Experience</a>
                       {% endif %}
