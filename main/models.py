@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 class Experience(models.Model):
@@ -49,3 +50,10 @@ class Award(models.Model):
 
     def __str__(self):
         return self.title
+    
+User = get_user_model()
+
+def is_editor(self):
+    return self.groups.filter(name='Editor').exists()
+
+User.add_to_class('is_editor', is_editor)
