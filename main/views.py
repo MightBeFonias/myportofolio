@@ -79,7 +79,7 @@ def create_experience(request):
 
 @login_required(login_url='/login/')
 def update_experience(request, experience_id):
-    if not request.user.is_superuser:
+    if not request.user.is_superuser and not request.user.groups.filter(name='Editor').exists():
         raise PermissionDenied
 
     experience = get_object_or_404(Experience, pk=experience_id)
@@ -128,7 +128,7 @@ def create_award(request):
 
 @login_required(login_url='/login/')
 def update_award(request, award_id):
-    if not request.user.is_superuser:
+    if not request.user.is_superuser and not request.user.groups.filter(name='Editor').exists():
         raise PermissionDenied
     
     award = get_object_or_404(Award, pk=award_id)
