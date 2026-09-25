@@ -66,7 +66,7 @@ section,
 }
 
 .brand,
-.site-header a {
+.site-header a, .site-header span {
     color: var(--ink);
     text-decoration: none;
 }
@@ -83,13 +83,13 @@ section,
     gap: 1.25rem;
 }
 
-.site-header nav a {
+.site-header nav a, .site-header nav span {
     font-size: 0.9rem;
     transition: color 0.4s ease;
 }
 
-.site-header nav a:hover,
-.site-header nav a:focus-visible {
+.site-header nav a:hover, .site-header nav span:hover,
+.site-header nav a:focus-visible, .site-header nav span:focus-visible {
     color: var(--accent);
 }
 
