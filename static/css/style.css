@@ -1119,3 +1119,7 @@ section,
     background: rgba(255, 255, 255, 0.25);
     font-size: 0.8rem;
 }
+
+.login-header, .register-header{
+    margin-bottom: 3rem
+}
