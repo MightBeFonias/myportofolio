@@ -191,7 +191,7 @@ def register(request):
     if request.method == 'POST' and form.is_valid():
         form.save()
         messages.success(request, "Akun berhasil dibuat. Silahkan login.")
-        return redirect("main:login")
+        return redirect("main:login_user")
     
     context = {
         "name" : "Fatih Naufal Habibillah",
