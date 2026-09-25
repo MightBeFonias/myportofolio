@@ -52,7 +52,7 @@
                   <p class="award-recognition">{{ award.recognition }}</p>
                   <p class="award-description">{{ award.description }}</p>
                     <div class="card-actions">
-                      {% if user.is_superuser %}
+                      {% if user.is_superuser or user.is_editor %}
                       <a href="{% url 'main:update_award' award.id %}"
                         class="button collection-action edit-action">Edit Award</a>
                       {% endif %}
