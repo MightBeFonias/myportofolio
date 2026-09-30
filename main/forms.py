@@ -1,5 +1,6 @@
 from django.forms import DateTimeInput, ModelForm, TextInput, Textarea, URLInput, DateInput
-
+from django.utils.html import strip_tags
+from django.core.exceptions import ValidationError
 from main.models import Experience, Award
 
 
@@ -46,6 +47,24 @@ class ExperienceForm(ModelForm):
                 }
             ),
         }
+
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Nama experience tidak boleh hanya berisi tag HTML.")
+        return title
+
+    def clean_category(self):
+        return strip_tags(self.cleaned_data["category"]).strip()
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
+    
+    def clean_started_at(self):
+        return strip_tags(self.cleaned_data["started_at"]).strip()
+    
+    def clean_ended_at(self):
+        return strip_tags(self.cleaned_data["ended_at"]).strip()
 
 class AwardForm(ModelForm):
     class Meta:
@@ -96,3 +115,21 @@ class AwardForm(ModelForm):
                 }
             )
         }
+    
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Nama award tidak boleh hanya berisi tag HTML.")
+        return title
+
+    def clean_recognition(self):
+        return strip_tags(self.cleaned_data["recognition"]).strip()
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
+    
+    def clean_image(self):
+        return strip_tags(self.cleaned_data["image"]).strip()
+    
+    def clean_awarded_at(self):
+        return strip_tags(self.cleaned_data["awarded_at"]).strip()

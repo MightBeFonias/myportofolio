@@ -2,13 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect, render
 from main.models import Award, Experience
 from django.contrib import messages
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from main.forms import ExperienceForm, AwardForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 import datetime
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def show_main(request):
@@ -23,40 +24,26 @@ def show_main(request):
     return render(request, "index.html", context)
 
 def show_experience(request):
-    json_response = get_experiences_json(request)
-
-    experiences = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8")
-    )
-
-    experiences = [experience.object for experience in experiences]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name" : "Fatih Naufal Habibillah",
-        "experience_list" : experiences,
         "title_query" : title_query,
+        "form" : ExperienceForm(),
     }
+
     return render(request, 'experience.html', context)
 
 
 def show_awards(request):
-    json_response = get_awards_json(request)
-
-    awards = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8")
-    )
-
-    awards = [award.object for award in awards]
     title_query = request.GET.get("title", "").strip()
 
     context = {
         "name": "Fatih Naufal Habibillah",
-        "awards": awards,
         "title_query" : title_query,
+        "form" : AwardForm(),
     }
+    
     return render(request, "awards.html", context)
 
 @login_required(login_url='/login/')
@@ -105,8 +92,31 @@ def get_experiences_json(request):
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize("json", experiences, use_natural_foreign_keys=True)
-    return HttpResponse(experiences_json, content_type="application/json")
+    data = []
+    for experience in experiences:
+        starred_users = experience.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ', '.join([u.username for u in starred_users])
+
+        data.append({
+            "pk": str(experience.id),
+            "fields": {
+                "title": experience.title,
+                "description": experience.description,
+                "category" : experience.category,
+                "status" : experience.is_ongoing,
+                "star_count" : starred_users.count(),
+                "is_starred" : is_starred,
+                "starred_by_names" : starred_by_names,
+                "category_display": experience.get_category_display(),
+                "star_count": starred_users.count(),
+                "started_at": experience.started_at,
+                "ended_at": experience.ended_at,
+                "is_ongoing": experience.is_ongoing,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url = '/login/')
 def create_award(request):
@@ -154,8 +164,26 @@ def get_awards_json(request):
     if title_query:
         awards = awards.filter(title__icontains=title_query)
 
-    awards_json = serializers.serialize("json", awards, use_natural_foreign_keys=True)
-    return HttpResponse(awards_json, content_type="application/json")
+    data = []
+    for award in awards:
+        starred_users = award.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ', '.join([u.username for u in starred_users])
+
+        data.append({
+            "pk" : str(award.id),
+            "fields" : {
+                "title": award.title,
+                "recognition": award.recognition,
+                "description": award.description,
+                "image": award.image,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 @login_required(login_url='/login/')
 def delete_experience(request, experience_id):
@@ -246,3 +274,39 @@ def toggle_star_award(request, award_id):
             award.starred_by.add(request.user)
 
     return redirect("main:show_awards")
+
+@require_POST
+def create_award_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan award."},
+            status=403,
+        )
+
+    form = AwardForm(request.POST)
+    if form.is_valid():
+        award = form.save()
+        return JsonResponse(
+            {"message": "Award berhasil ditambahkan.", "pk": str(award.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Hanya pemilik portofolio yang dapat menambahkan proyek."},
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Proyek berhasil ditambahkan.", "pk": str(experience.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
