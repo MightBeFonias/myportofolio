@@ -112,14 +112,18 @@ python manage.py runserver
 
 Kalau mau review websitenya, bisa langsung aja buka [disini](fatih-naufal51-myportofolio.pws.cs.ui.ac.id)
 
-### Tugas 4
+### Tugas 5
 
-1. ...
+1. Debouncing adalah teknik untuk menunda sebuah fungsi hingga suatu jeda waktu berlalu tanpa event baru. Selama pengguna masih mengetik, timer sebelumnya dibatalkan dan dimulai lagi. Dengan demikian, browser hanya mengirim permintaan setelah pengguna berhenti mengetik selama sejenak.
 
-2. ...
+2. await berfungsi untuk “menunggu” Promise selesai diproses sebelum melanjutkan ke baris kode berikutnya. Tanpa await, sebuah Promise akan tetap berjalan di belakang layar dan kode berikutnya akan langsung dieksekusi tanpa menunggu hasilnya.
 
-3. ...
+3. Cross-Site Scripting (XSS) adalah serangan ketika penyerang berhasil menyisipkan kode JavaScript miliknya ke dalam halaman web yang kemudian dijalankan di browser pengguna lain. Template Django melakukan auto-escaping pada setiap { variabel }. Karakter seperti < dan > diubah menjadi &lt; dan &gt; sehingga browser menampilkannya sebagai teks biasa, bukan sebagai tag HTML. Sedangkan saat menggunakan AJAX, data dari JSON disisipkan ke dalam template literal lalu dipasang lewat innerHTML. Tidak ada lagi Django yang melakukan escaping sehingga browser akan memperlakukan setiap tag HTML di dalam data sebagai kode sungguhan.
 
 ## AI Disclosure
 
-Pada Tugas 4, saya tidak menggunakan AI sama sekali dalam seluruh tahapan pengerjaan saya, informasi yang saya dapatkan hanya berasal dari internet seperti stackoverflow, django docs, dll. Saya juga tak menggunakan AI Overview untuk mengerjakan Tugas 4.
+Pada Tugas 5, saya kembali menggunakan Hermes Agent dengan model GPT 5.6 Terra untuk melakukan beberapa automasi, automasi yang saya lakukan meliputi dua hal, yakni:
+- Menyesuaikan unittest supaya cocok dengan codebase Tugas 5 saya sekarang.
+- Memeriksa apakah codebase saya sudah memenuhi checklist pada Tugas 5.
+
+Untuk strategi prompting, saya selalu memberi constraints terhadap Hermes Agent supaya tidak mengubah file lain selain main/tests.py sehingga tidak terjadi perubahan yang tidak diinginkan
