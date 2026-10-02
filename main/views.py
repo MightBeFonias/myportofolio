@@ -180,6 +180,7 @@ def get_awards_json(request):
                 "star_count": starred_users.count(),
                 "is_starred": is_starred,
                 "starred_by_names": starred_by_names,
+                "awarded_at" : award.awarded_at,
             }
         })
 
