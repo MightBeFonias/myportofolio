@@ -13,7 +13,7 @@ from main.serializers import ExperienceSerializer, AwardSerializer
 
 @api_view(['GET', 'POST', 'HEAD'])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly, IsPortfolioOwnerOrEditorOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def experience_list(request):
     if request.method in ('GET', 'HEAD'):
         experiences = Experience.objects.prefetch_related('starred_by').order_by('title', 'id')
@@ -30,7 +30,7 @@ def experience_list(request):
 
 @api_view(['GET', 'HEAD', 'PUT', 'PATCH', 'DELETE'])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly, IsPortfolioOwnerOrEditorOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def experience_detail(request, experience_id):
     experience = get_object_or_404(Experience.objects.prefetch_related('starred_by'), pk=experience_id)
     if request.method in ('GET', 'HEAD'):
@@ -76,7 +76,7 @@ def award_star(request, award_id):
 
 @api_view(['GET', 'POST', 'HEAD'])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly, IsPortfolioOwnerOrEditorOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def award_list(request):
     if request.method in ('GET', 'HEAD'):
         awards = Award.objects.prefetch_related('starred_by').order_by('title', 'id')
@@ -93,7 +93,7 @@ def award_list(request):
 
 @api_view(['GET', 'HEAD', 'PUT', 'PATCH', 'DELETE'])
 @authentication_classes([SessionAuthentication])
-@permission_classes([IsPortfolioOwnerOrReadOnly, IsPortfolioOwnerOrEditorOrReadOnly])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def award_detail(request, award_id):
     award = get_object_or_404(Award.objects.prefetch_related('starred_by'), pk=award_id)
     if request.method in ('GET', 'HEAD'):
