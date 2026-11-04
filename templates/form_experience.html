@@ -9,6 +9,7 @@
                 <h1>{% if is_update %}Edit Experience{% else %}Add New Experience{% endif %}</h1>
                 <form method="post"
                       action="{% if is_update %}{% url 'main:update_experience' experience.id %}{% else %}{% url 'main:create_experience' %}{% endif %}"
+                      {% if is_update %}data-api-url="{% url 'api:experience-detail' experience.id %}"{% endif %}
                       class="form">
                     {% csrf_token %}
                     {% for field in form %}
@@ -26,4 +27,53 @@
             </div>
         </section>
     </main>
+    {% if is_update %}
+    <script>
+        const editForm = document.querySelector('form[data-api-url]');
+
+        editForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const submitButton = editForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+
+            try {
+                const formData = new FormData(editForm);
+                const csrfToken = formData.get('csrfmiddlewaretoken');
+                formData.delete('csrfmiddlewaretoken');
+
+                const response = await fetch(editForm.dataset.apiUrl, {
+                    method: 'PATCH',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    const message = Object.values(data)
+                        .flat()
+                        .filter(value => typeof value === 'string')
+                        .join(' ');
+
+                    showToast(
+                        'Gagal menyimpan',
+                        message || `Terjadi kesalahan (status ${response.status}).`,
+                        'error',
+                    );
+                    return;
+                }
+
+                showToast('Berhasil', 'Perubahan berhasil disimpan.', 'success');
+            } catch (error) {
+                console.error(error);
+                showToast('Gagal menyimpan', 'Tidak dapat terhubung ke server.', 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+    {% endif %}
 {% endblock content %}
