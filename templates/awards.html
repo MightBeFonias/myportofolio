@@ -57,11 +57,14 @@
         {% include "components/award_form_modal.html" %}
     {% endif %}
 
+    {% csrf_token %}
     <script>
-        const BASE_AWARDS_ENDPOINT = "{% url 'main:get_awards_json' %}";
+        const BASE_AWARDS_ENDPOINT = "{% url 'api:award-list' %}";
+        const DETAIL_AWARD_ENDPOINT = "{% url 'api:award-detail' '00000000-0000-0000-0000-000000000000' %}";
+        const STAR_AWARD_ENDPOINT = "{% url 'api:award-star' '00000000-0000-0000-0000-000000000000' %}";
         const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === "true";
+        const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
         const IS_EDITOR = "{{ user.is_editor|yesno:'true,false' }}" === "true";
-        let awardsAbortController;
 
         const loadingState = document.getElementById('loading');
         const errorState = document.getElementById('error');
@@ -69,28 +72,37 @@
         const gridContainer = document.getElementById('grid');
         const searchForm = document.getElementById('collection-search-form');
         const searchInput = document.getElementById('search-input');
-        const SEARCH_DEBOUNCE_DELAY = 300;
+        const awardForm = document.getElementById('award-form');
+        let awardsAbortController;
         let searchDebounceTimer;
 
-        function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        function getCookie(name) {
+            const prefix = `${name}=`;
+            const cookie = document.cookie.split(';').map(value => value.trim())
+                .find(value => value.startsWith(prefix));
+            return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+        }
+
+        function awardEndpoint(pattern, id) {
+            return pattern.replace('00000000-0000-0000-0000-000000000000', id);
+        }
+
+        function displayPageSection({ showLoading = false, showError = false,
+            showEmpty = false, showGrid = false }) {
             loadingState.classList.toggle('hide', !showLoading);
             errorState.classList.toggle('hide', !showError);
             emptyState.classList.toggle('hide', !showEmpty);
             gridContainer.classList.toggle('hide', !showGrid);
         }
 
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;')
-                .replaceAll('"', '&quot;')
-                .replaceAll("'", '&#39;');
-        }
-
-        function buildAwardCardElement(item) {
-            const award = item.fields;
-            const awardId = item.pk;
+        function buildAwardCardElement(award) {
+            const awardId = award.id;
             const awardYear = new Date(award.awarded_at).getFullYear();
 
             const articleElement = document.createElement('article');
@@ -100,14 +112,12 @@
                 .replace('00000000-0000-0000-0000-000000000000', awardId);
             const starUrl = "{% url 'main:toggle_star_award' '00000000-0000-0000-0000-000000000000' %}"
                 .replace('00000000-0000-0000-0000-000000000000', awardId);
-            const updateUrl = "{% url 'main:update_award' '00000000-0000-0000-0000-000000000000'}"
+            const updateUrl = "{% url 'main:update_award' '00000000-0000-0000-0000-000000000000' %}"
                 .replace('00000000-0000-0000-0000-000000000000', awardId);
 
-            const deleteHtml = IS_SUPERUSER 
-                ? `<form method="post" action="${deleteUrl}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="button button-danger" onclick="return confirm('Yakin ingin menghapus award ini?');">Hapus</button>
-                </form>`
+            const deleteHtml = IS_SUPERUSER
+                ? `<button type="button" class="button button-danger"
+                        data-action="delete" data-id="${awardId}">Hapus</button>`
                 : '';
                 
             const updateHtml = IS_SUPERUSER || IS_EDITOR
@@ -132,8 +142,10 @@
                         ${updateHtml}
                         <form method="post" action="${starUrl}" class="star-form">
                             {% csrf_token %}
-                            <button type="submit" 
+                            <button type="button"
                                     class="button button-star${isStarredClass}"
+                                    data-action="star"
+                                    data-id="${awardId}"
                                     title="${starTitle}">
                                 <span aria-hidden="true">★</span>
                                 ${starText}
@@ -149,78 +161,47 @@
             return articleElement;
         }
 
-        function closeAwardModal() {
-            document.getElementById("add-award-modal").hidePopover();
-        }
-
-        async function fetchAwards(searchQuery = "") {
+        async function fetchAwards(searchQuery = '') {
             if (awardsAbortController) awardsAbortController.abort();
             awardsAbortController = new AbortController();
-
             try {
                 displayPageSection({ showLoading: true });
-                
-                const url = searchQuery ? `${BASE_AWARDS_ENDPOINT}?title=${encodeURIComponent(searchQuery)}` : BASE_AWARDS_ENDPOINT;
-                
+                const url = new URL(BASE_AWARDS_ENDPOINT, window.location.origin);
+                if (searchQuery) url.searchParams.set('title', searchQuery);
                 const response = await fetch(url, {
-                    headers: { 'Accept': 'application/json' },
+                    headers: { Accept: 'application/json' },
                     signal: awardsAbortController.signal,
                 });
-
-                if (!response.ok) throw new Error('Failed to fetch data');
-
-                const awardData = await response.json();
-
-                if (awardData.length === 0) {
-                    displayPageSection({ showEmpty: true });
-                } else {
-                    gridContainer.innerHTML = '';
-                    awardData.forEach(item => {
-                        gridContainer.appendChild(buildAwardCardElement(item));
-                    });
-                    displayPageSection({ showGrid: true });
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const awards = await response.json();
+                gridContainer.replaceChildren(...awards.map(buildAwardCardElement));
+                displayPageSection({ showGrid: awards.length > 0, showEmpty: awards.length === 0 });
             } catch (error) {
                 if (error.name === 'AbortError') return;
-                console.error('Error loading awards:', error);
+                console.error(error);
                 displayPageSection({ showError: true });
             }
         }
 
-        function searchAwards() {
-            fetchAwards(searchInput.value.trim());
+        function apiErrorMessage(data, status) {
+            const messages = Object.values(data).flat().filter(value => typeof value === 'string');
+            return messages.join(' ') || `Request failed (HTTP ${status}).`;
         }
 
-        searchInput.addEventListener("input", function() {
-            clearTimeout(searchDebounceTimer);
-
-            searchDebounceTimer = setTimeout(function() {
-                searchAwards();
-            }, SEARCH_DEBOUNCE_DELAY);
-        });
-
-        searchForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-            clearTimeout(searchDebounceTimer);
-            searchAwards();
-        });
-
-        const CREATE_AWARD_ENDPOINT = "{% url 'main:create_award_ajax' %}";
-        const awardForm = document.getElementById('award-form');
-
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+        async function writeAward(url, method, payload) {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: payload === undefined ? undefined : JSON.stringify(payload),
+            });
+            if (response.status === 204) return null;
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(apiErrorMessage(data, response.status));
+            return data;
         }
 
         async function addAward(event) {
@@ -230,23 +211,20 @@
             submitButton.disabled = true;
 
             try {
-                const response = await fetch(CREATE_AWARD_ENDPOINT, {
+                const response = await fetch(BASE_AWARDS_ENDPOINT, {
                     method: 'POST',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                    headers: { 'X-CSRFToken': getCookie('csrftoken'), Accept: 'application/json', },
                     body: new FormData(awardForm),
                 });
                 const result = await response.json().catch(() => ({}));
 
                 if (response.ok) {
                     awardForm.reset();
-                    closeAwardModal();
+                    document.getElementById('add-award-modal').hidePopover();
                     showToast('Berhasil', 'Award baru berhasil ditambahkan!', 'success');
                     fetchAwards(searchInput.value.trim());
                 } else {
-                    const errorMessages = result.errors
-                        ? Object.values(result.errors).flat().map(error => error.message)
-                        : [result.message || `Terjadi kesalahan (status ${response.status}).`];
-                    showToast('Gagal menambahkan award', errorMessages.join(' '), 'error');
+                   showToast('Gagal menambahkan award', apiErrorMessage(result, response.status), 'error');
                 }
             } catch (error) {
                 console.error('Error adding award:', error);
@@ -256,10 +234,36 @@
             }
         }
 
-        if (awardForm) {
-            awardForm.addEventListener('submit', addAward);
-        }
+        if (awardForm) awardForm.addEventListener('submit', addAward);
 
-        searchAwards();
+        gridContainer.addEventListener('click', async function(event) {
+            const button = event.target.closest('button[data-action]');
+            if (!button || button.disabled) return;
+            const action = button.dataset.action;
+            if (action === 'delete' && !window.confirm('Delete this award?')) return;
+            button.disabled = true;
+            try {
+                const pattern = action === 'star' ? STAR_AWARD_ENDPOINT : DETAIL_AWARD_ENDPOINT;
+                await writeAward(awardEndpoint(pattern, button.dataset.id),
+                    action === 'star' ? 'POST' : 'DELETE');
+                showToast('Success', action === 'star' ? 'Star updated.' : 'Award deleted.', 'success');
+                await fetchAwards(searchInput.value.trim());
+            } catch (error) {
+                showToast('Request failed', error.message, 'error');
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => fetchAwards(searchInput.value.trim()), 300);
+        });
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            clearTimeout(searchDebounceTimer);
+            fetchAwards(searchInput.value.trim());
+        });
+        fetchAwards(searchInput.value.trim());
     </script>
     {% endblock content %}
