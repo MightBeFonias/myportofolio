@@ -147,5 +147,6 @@ Pada Tugas 6, saya menggunakan Codex untuk melakukan beberapa automasi, automasi
 - Menyesuaikan unittest supaya cocok dengan codebase Tugas 6 saya sekarang.
 - Memeriksa apakah codebase saya sudah memenuhi checklist pada Tugas 6.
 - Memeriksa apakah ada bug pada codebase saya.
+- Menyesuaikan README.md sebelum pertanyaan Reflektif supaya sesuai dengan current state dari codebase saya.
 
 Untuk strategi prompting, saya selalu memberi constraints terhadap Codex supaya tidak mengubah file lain selain main/api_tests.py sehingga tidak terjadi perubahan yang tidak diinginkan
